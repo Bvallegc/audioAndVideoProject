@@ -34,6 +34,9 @@ The resulting video is saved as 'results/output.mp4'. The speaker in the video a
 ## Set up
 
 1. Install all dependencies from the [requirements.txt](requirements.txt) file.
+    ```bash
+    pip install -r requirements.txt
+    ```
 2. Install the 'espeak' package using apt-get or brew:
     - On Ubuntu or Debian-based systems, use:
         ```bash
