@@ -1,0 +1,4 @@
+venv/
+.vscode/
+checkpoints/
+Wav2Lip/
