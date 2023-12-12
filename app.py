@@ -2,4 +2,4 @@ from translator import Translator
 
 translator = Translator(language='french')
 
-translator.translate('castillo_short.mp4')
+translator.translate('video.mp4')

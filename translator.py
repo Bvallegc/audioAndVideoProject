@@ -8,6 +8,8 @@ import soundfile as sf
 from moviepy.editor import VideoFileClip
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
 from TTS.api import TTS
+from TTS.tts.utils.managers import EmbeddingManager
+from scipy.spatial.distance import cosine
 
 class Translator:
     '''
@@ -22,7 +24,17 @@ class Translator:
         '''
         self.language = language
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
+
+        model_path = '/Users/franciscomagot/Library/Application Support/tts/tts_models--multilingual--multi-dataset--xtts_v2'
+        config_path = '/Users/franciscomagot/Library/Application Support/tts/tts_models--multilingual--multi-dataset--xtts_v2/config.json'
+
+        # if os.path.exists(model_path) and os.path.exists(config_path):
+        #     self.tts = TTS(model_path=model_path, config_path=config_path, progress_bar=False).to(self.device)
+        # else:
+        #     self.tts = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2", progress_bar=False).to(self.device)
         self.tts = TTS(model_name="tts_models/multilingual/multi-dataset/xtts_v2", progress_bar=False).to(self.device)
+
+
         self.processor = WhisperProcessor.from_pretrained("openai/whisper-large")
         self.model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-large")
 
@@ -149,9 +161,9 @@ class Translator:
 
 
         # Call the Wav2Lip inference file to sync original video with generated audio
-        command = f"python3 Wav2Lip/inference.py --checkpoint_path {checkpoint_path} --face {video_path} --audio 'results/output.wav' --pads {pad_top} {pad_bottom} {pad_left} {pad_right} --resize_factor {rescaleFactor}"
+        command = f"python3 Wav2Lip2/inference.py --checkpoint_path {checkpoint_path} --face {video_path} --audio 'results/output.wav' --pads {pad_top} {pad_bottom} {pad_left} {pad_right} --resize_factor {rescaleFactor}"
 
-        subprocess.run(command, shell=True)
+        subprocess.call(command, shell=True)
 
     def translate(self, video_path='input_video.mp4'):
         '''
@@ -167,3 +179,13 @@ class Translator:
         translated_text = self.wav_to_txt() # Generate translated text from original audio
         self.generate_audio(text=translated_text) # Generate audio with voice cloning from translated text and speaker audio
         self.lipsync(video_path=path) # Lipsync generated audio with original video
+
+    def calculate_metrics(self):
+        coqui_manager = EmbeddingManager(encoder_config_path='config_se.json', encoder_model_path='model_se.pth.tar')
+
+        og_embeddings = coqui_manager.compute_embedding_from_clip('temp/audio.wav')
+        vc_embeddings = coqui_manager.compute_embedding_from_clip('results/output.wav')
+
+        # calculate cosine similarity
+        similarity = 1 - cosine(og_embeddings, vc_embeddings)
+        return similarity
