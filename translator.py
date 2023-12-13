@@ -181,7 +181,7 @@ class Translator:
         self.lipsync(video_path=path) # Lipsync generated audio with original video
 
     def calculate_metrics(self):
-        coqui_manager = EmbeddingManager(encoder_config_path='config_se.json', encoder_model_path='model_se.pth.tar')
+        coqui_manager = EmbeddingManager(encoder_config_path='checkpoints/config_se.json', encoder_model_path='checkpoints/model_se.pth.tar')
 
         og_embeddings = coqui_manager.compute_embedding_from_clip('temp/audio.wav')
         vc_embeddings = coqui_manager.compute_embedding_from_clip('results/output.wav')
