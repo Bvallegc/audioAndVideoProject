@@ -26,7 +26,7 @@ for i in range(num_segments):
 
 # Calculate metrics for comparisons between the output and each audio segment
 for i in range(num_segments):
-    cosine = translator.calculate_metrics(speaker_1='results/output.wav', speaker_2=f'{audio_path}{i+1}.wav')
+    cosine = translator.calculate_metrics(speaker_1='output.wav', speaker_2=f'{audio_path}{i+1}.wav')
     metrics.append({'cosine': cosine, 'type': 'output_comparison'})
 
 # Extract data and colors for plotting
