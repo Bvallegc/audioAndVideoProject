@@ -161,7 +161,7 @@ class Translator:
 
 
         # Call the Wav2Lip inference file to sync original video with generated audio
-        command = f"python3 Wav2Lip2/inference.py --checkpoint_path {checkpoint_path} --face {video_path} --audio 'results/output.wav' --pads {pad_top} {pad_bottom} {pad_left} {pad_right} --resize_factor {rescaleFactor}"
+        command = f"python3 Wav2Lip/inference.py --checkpoint_path {checkpoint_path} --face {video_path} --audio 'results/output.wav' --pads {pad_top} {pad_bottom} {pad_left} {pad_right} --resize_factor {rescaleFactor}"
 
         subprocess.call(command, shell=True)
 
